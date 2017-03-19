@@ -11,10 +11,6 @@ import android.widget.Button;
 
 import java.util.List;
 
-/**
- * Created by alanhill on 3/16/17.
- */
-
 public class BeatBoxFragment extends Fragment {
 
     private BeatBox beatBox;
@@ -33,18 +29,25 @@ public class BeatBoxFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        beatBox.release();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         beatBox = new BeatBox(getActivity());
     }
 
-    private class SoundHolder extends RecyclerView.ViewHolder {
+    private class SoundHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Button button;
         private Sound sound;
 
         public SoundHolder(LayoutInflater inflater, ViewGroup container) {
             super(inflater.inflate(R.layout.list_item_sound, container, false));
             button = (Button) itemView.findViewById(R.id.list_item_sound_button);
+            button.setOnClickListener(this);
         }
 
         public void bindSound(Sound sound) {
@@ -52,6 +55,10 @@ public class BeatBoxFragment extends Fragment {
             this.button.setText(this.sound.getName());
         }
 
+        @Override
+        public void onClick(View v) {
+            beatBox.play(sound);
+        }
     }
 
     private class SoundAdapter extends RecyclerView.Adapter<SoundHolder> {
